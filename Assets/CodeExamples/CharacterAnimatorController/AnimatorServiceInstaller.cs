@@ -1,8 +1,6 @@
-﻿using MyServices.CharacterAnimatorController.Interfaces;
-using MyServices.CharacterAnimatorController.Realization;
-using Zenject;
+﻿using Zenject;
 
-namespace MyServices.CharacterAnimatorController
+namespace CodeExamples.CharacterAnimatorController
 {
     public class AnimatorServiceInstaller : Installer<AnimatorServiceInstaller>
     {
@@ -11,8 +9,8 @@ namespace MyServices.CharacterAnimatorController
             Container
                 .BindFactory<
                     CharacterAnimatorProtocol, 
-                    Realization.CharacterAnimatorController, 
-                    Realization.CharacterAnimatorController.Factory>();
+                    CharacterAnimatorController, 
+                    CharacterAnimatorController.Factory>();
 
             Container
                 .Bind<IAnimatorService>()

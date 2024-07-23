@@ -1,7 +1,6 @@
-using MyServices.UIService.Interfaces;
 using UnityEngine;
 
-namespace MyServices.UIService.Realization
+namespace CodeExamples.UIService
 {
     public class UIRoot : MonoBehaviour, IUIRoot
     {

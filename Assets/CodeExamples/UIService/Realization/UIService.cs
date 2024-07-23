@@ -1,32 +1,47 @@
 using System;
 using System.Collections.Generic;
-using MyServices.UIService.Interfaces;
 using UnityEngine;
 using Zenject;
 
-namespace MyServices.UIService.Realization 
+namespace CodeExamples.UIService 
 {
     public class UIService : IUIService
     {
         private Transform _deactivatedContainer;
         
-        private readonly IUIRoot _uIRoot;
-        private readonly IInstantiator _instantiator;
+        private IUIRoot _uIRoot;
+        private IInstantiator _instantiator;
         
-        private readonly Dictionary<Type,UIWindow> _viewStorage = new Dictionary<Type,UIWindow>();
-        private readonly Dictionary<Type, GameObject> _initWindows= new Dictionary<Type, GameObject>();
-
-        private const string GeneralWindowsSource = "UIWindows";
+        private Dictionary<Type,UIWindow> _viewStorage = 
+            new Dictionary<Type,UIWindow>();
+        private Dictionary<Type, GameObject> _initWindows= 
+            new Dictionary<Type, GameObject>();
         
         public UIService(
             IInstantiator instantiator,
             IUIRoot uIRoot)
         {
-
             _instantiator = instantiator;
             _uIRoot = uIRoot;
         }
 
+        public void Dispose()
+        {
+            _deactivatedContainer = null;
+            _uIRoot = null;
+            _instantiator = null;
+
+            _initWindows.Clear();
+            _initWindows = null;
+
+            foreach (var viewKVP in _viewStorage)
+            {
+                viewKVP.Value.Dispose();
+            }
+            _viewStorage.Clear();
+            _viewStorage = null;
+        }
+        
         public T Show<T>(int layer = 0) where T : UIWindow
         {
             var window = Get<T>();
@@ -41,7 +56,6 @@ namespace MyServices.UIService.Realization
 
                 var component = window.GetComponent<T>();
                 
-                //always resize to screen size
                 var rect = component.transform as RectTransform;
                 if (rect != null)
                 {
@@ -98,14 +112,6 @@ namespace MyServices.UIService.Realization
         public void LoadWindows(string source)
         {
             var windows = Resources.LoadAll(source, typeof(UIWindow));
-
-            foreach (var window in windows)
-            {
-                var windowType = window.GetType();
-                _viewStorage.Add(windowType, (UIWindow) window);
-            }
-            
-            windows = Resources.LoadAll(GeneralWindowsSource, typeof(UIWindow));
 
             foreach (var window in windows)
             {

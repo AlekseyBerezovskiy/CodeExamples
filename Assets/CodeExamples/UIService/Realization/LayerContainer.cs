@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace MyServices.UIService.Realization
+namespace CodeExamples.UIService
 {
     public class LayerContainer : MonoBehaviour
     {

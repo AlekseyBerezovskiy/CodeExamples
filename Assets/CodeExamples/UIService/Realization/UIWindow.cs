@@ -1,8 +1,7 @@
 using System;
-using MyServices.UIService.Interfaces;
 using UnityEngine;
 
-namespace MyServices.UIService.Realization
+namespace CodeExamples.UIService
 {
     public abstract class UIWindow : MonoBehaviour, IUIWindow
     {
@@ -10,6 +9,7 @@ namespace MyServices.UIService.Realization
         public EventHandler OnHideEvent { get; set; }
         public abstract void Show();
         public abstract void Hide();
+        public virtual void Dispose() { }
         protected virtual void OnShowEnd() { }
         protected virtual void OnHideEnd() { }
     }

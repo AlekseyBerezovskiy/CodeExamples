@@ -1,6 +1,8 @@
-namespace MyServices.UIService.Interfaces 
+using System;
+
+namespace CodeExamples.UIService 
 {
-    public interface IUIWindow
+    public interface IUIWindow : IDisposable
     {
         void Show();    
         void Hide();

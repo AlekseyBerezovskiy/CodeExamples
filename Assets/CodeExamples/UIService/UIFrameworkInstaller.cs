@@ -1,8 +1,6 @@
-using MyServices.UIService.Interfaces;
-using MyServices.UIService.Realization;
 using Zenject;
 
-namespace MyServices.UIService.Installer 
+namespace CodeExamples.UIService 
 {
     public class UIFrameworkInstaller : Installer<UIFrameworkInstaller>
     {
@@ -16,7 +14,7 @@ namespace MyServices.UIService.Installer
 
             Container
                 .Bind<IUIService>()
-                .To<Realization.UIService>()
+                .To<UIService>()
                 .AsSingle();
         }
     }

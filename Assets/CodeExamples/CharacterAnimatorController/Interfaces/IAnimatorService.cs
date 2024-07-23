@@ -1,10 +1,11 @@
 ﻿using System;
 using UnityEngine;
 
-namespace MyServices.CharacterAnimatorController.Interfaces
+namespace CodeExamples.CharacterAnimatorController
 {
     public interface IAnimatorService : IDisposable
     {
-        ICharacterAnimatorController CreateAnimator(Animator animator);
+        ICharacterAnimatorController CreateAnimator(
+            Animator animator);
     }
 }

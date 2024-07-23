@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using DG.Tweening;
-using MyServices.CharacterAnimatorController.Interfaces;
 using UniRx;
 using UnityEngine;
 using Zenject;
 
-namespace MyServices.CharacterAnimatorController.Realization
+namespace CodeExamples.CharacterAnimatorController
 {
     public class CharacterAnimatorController : ICharacterAnimatorController
     {
@@ -23,7 +22,38 @@ namespace MyServices.CharacterAnimatorController.Realization
             _animator = characterAnimatorProtocol.Animator;
         }
         
-        public void SetAction(AnimatorTransitionType transitionType, string transitionName, ref Action<object> animationEvent)
+        public void Dispose()
+        {
+            _animator = null;
+
+            for (int i = 0; i < _addedActionsList.Count; i++)
+            {
+                _addedActionsList[i] = null;
+            }
+            _addedActionsList.Clear();
+
+            foreach (var lerpKVP in _lerpTweens)
+            {
+                lerpKVP.Value?.Kill();
+            }
+            _lerpTweens.Clear();
+            _lerpTweens = null;
+            
+            foreach (var lerpKVP in _lerpLayersTweens)
+            {
+                lerpKVP.Value?.Kill();
+            }
+            _lerpLayersTweens.Clear();
+            _lerpLayersTweens = null;
+            
+            _compositeDisposable.Dispose();
+            _compositeDisposable = null;
+        }
+        
+        public void SetAction(
+            AnimatorTransitionType transitionType, 
+            string transitionName, 
+            ref Action<object> animationEvent)
         {
             animationEvent += value =>
             {
@@ -44,7 +74,9 @@ namespace MyServices.CharacterAnimatorController.Realization
             _addedActionsList.Add(animationEvent);
         }
 
-        public void SetFloatAction(string transitionName, ReactiveProperty<float> value)
+        public void SetFloatAction(
+            string transitionName, 
+            ReactiveProperty<float> value)
         {
             var disposable = value.Subscribe(f =>
             {
@@ -54,7 +86,10 @@ namespace MyServices.CharacterAnimatorController.Realization
             _compositeDisposable.Add(disposable);
         }
 
-        public void SetFloatActionWithLerp(string transitionName, ReactiveProperty<float> value, float speed)
+        public void SetFloatActionWithLerp(
+            string transitionName, 
+            ReactiveProperty<float> value, 
+            float speed)
         {
             var disposable = value.Subscribe(f =>
             {
@@ -87,7 +122,10 @@ namespace MyServices.CharacterAnimatorController.Realization
             _compositeDisposable.Add(disposable);
         }
 
-        public void SetLayerWeightWithLerp(int index, float value, float lerpSpeed)
+        public void SetLayerWeightWithLerp(
+            int index, 
+            float value, 
+            float lerpSpeed)
         {
             if (_lerpLayersTweens.ContainsKey(index))
             {
@@ -109,29 +147,10 @@ namespace MyServices.CharacterAnimatorController.Realization
                 
             _lerpLayersTweens.Add(index, tween);
         }
-
-        public void Dispose()
-        {
-            _animator = null;
-
-            for (int i = 0; i < _addedActionsList.Count; i++)
-            {
-                _addedActionsList[i] = null;
-            }
-            _addedActionsList.Clear();
-
-            foreach (var lerpKVP in _lerpTweens)
-            {
-                lerpKVP.Value?.Kill();
-            }
-            _lerpTweens.Clear();
-            _lerpTweens = null;
-            
-            _compositeDisposable.Dispose();
-            _compositeDisposable = null;
-        }
         
-        public class Factory : PlaceholderFactory<CharacterAnimatorProtocol, CharacterAnimatorController>
+        public class Factory : PlaceholderFactory<
+            CharacterAnimatorProtocol, 
+            CharacterAnimatorController>
         { }
     }
 
@@ -143,5 +162,12 @@ namespace MyServices.CharacterAnimatorController.Realization
         {
             Animator = animator;
         }
+    }
+    
+    public enum AnimatorTransitionType
+    {
+        Trigger,
+        Integer,
+        Bool
     }
 }

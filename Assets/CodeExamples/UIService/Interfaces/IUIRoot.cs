@@ -1,7 +1,6 @@
-using MyServices.UIService.Realization;
 using UnityEngine;
 
-namespace MyServices.UIService.Interfaces
+namespace CodeExamples.UIService
 {
     public interface IUIRoot
     {
